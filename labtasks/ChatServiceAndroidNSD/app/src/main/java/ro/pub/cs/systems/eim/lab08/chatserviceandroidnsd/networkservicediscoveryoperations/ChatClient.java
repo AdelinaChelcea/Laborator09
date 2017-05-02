@@ -1,5 +1,7 @@
 package ro.pub.cs.systems.eim.lab08.chatserviceandroidnsd.networkservicediscoveryoperations;
 
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.Context;
 import android.util.Log;
 
@@ -15,6 +17,7 @@ import java.util.concurrent.BlockingQueue;
 import ro.pub.cs.systems.eim.lab08.chatserviceandroidnsd.general.Constants;
 import ro.pub.cs.systems.eim.lab08.chatserviceandroidnsd.general.Utilities;
 import ro.pub.cs.systems.eim.lab08.chatserviceandroidnsd.model.Message;
+import ro.pub.cs.systems.eim.lab08.chatserviceandroidnsd.view.ChatActivity;
 
 public class ChatClient {
 
@@ -83,6 +86,21 @@ public class ChatClient {
                     //   - if the ChatConversationFragment is visible (query the FragmentManager for the Constants.FRAGMENT_TAG tag)
                     //   append the message to the graphic user interface
 
+                    while(!Thread.currentThread().isInterrupted()){
+                        String content = messageQueue.take();
+                        if(content != null && !content.isEmpty()){
+                            printWriter.println(content);
+                            printWriter.flush();
+                            Message msg = new Message(content, Constants.MESSAGE_TYPE_SENT);
+                            conversationHistory.add(msg);
+                            ChatActivity chatActivity = (ChatActivity)context;
+                            FragmentManager fragmentManager = chatActivity.getFragmentManager();
+                            Fragment fragment = fragmentManager.findFragmentByTag(Constants.FRAGMENT_TAG);
+                            if(fragment != null){
+                                
+                            }
+                        }
+                    }
                 } catch (Exception exception) {
                     Log.e(Constants.TAG, "An exception has occurred: " + exception.getMessage());
                     if (Constants.DEBUG) {
